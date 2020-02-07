@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/_Imported/Scenes/SampleScene.unity
+- path: Assets/Scenes/UnitTests/FlyingControls_test.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
