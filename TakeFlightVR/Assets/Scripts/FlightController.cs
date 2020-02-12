@@ -25,14 +25,13 @@ public class FlightController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.LogError("Start");
         Calibrate();
     }
 
     // Update is called once per frame
     void Update() {
+        OVRInput.Get(OVRInput.Button.One);
         if (OVRInput.GetDown(calibrateButton)) {
-            Debug.LogError("Caliibrating");
             Calibrate();
         }
         CalculateFlightVectors();
@@ -55,36 +54,19 @@ public class FlightController : MonoBehaviour
     }
 
     void ApplyDeadzone(ref Vector3 vec) {
-        if (vec.x < 0) {
-            vec.x *= -1;
-            vec.x = deadZone.Evaluate(vec.x);
-            vec.x *= -1;
-        } else {
-            vec.x = deadZone.Evaluate(vec.x);
-        }
+        vec.x = EvaluateDeadzone(vec.x);
+        vec.y = EvaluateDeadzone(vec.y);
+        vec.z = EvaluateDeadzone(vec.z);
+    }
 
-        if (vec.y < 0) {
-            vec.y *= -1;
-            vec.y = deadZone.Evaluate(vec.y);
-            vec.y *= -1;
-        }
-        else {
-            vec.y = deadZone.Evaluate(vec.y);
-        }
-        if (vec.z < 0) {
-            vec.z *= -1;
-            vec.z = deadZone.Evaluate(vec.z);
-            vec.z *= -1;
-        }
-        else {
-            vec.z = deadZone.Evaluate(vec.z);
-        }
+    float EvaluateDeadzone(float v)
+    {
+        return (v < 0 ? -1 : 1) * deadZone.Evaluate(Mathf.Abs(v));
     }
 
     void Fly() {
         Vector3 moveVector = leftFlightVector + rightFlightVector;
         playerController.GravityModifier = 0;
         playerController.transform.position += moveVector * Time.deltaTime;
-        Debug.Log("movevector = " + moveVector);
     }
 }

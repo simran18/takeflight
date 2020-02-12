@@ -17,10 +17,12 @@ using System.Collections;
 /// </summary>
 public class TeleportTransitionBlink : TeleportTransition
 {
-	/// <summary>
-	/// How long the transition takes. Usually this is greater than Teleport Delay.
-	/// </summary>
-	[Tooltip("How long the transition takes. Usually this is greater than Teleport Delay.")]
+    public OVRScreenFade fader;
+
+    /// <summary>
+    /// How long the transition takes. Usually this is greater than Teleport Delay.
+    /// </summary>
+    [Tooltip("How long the transition takes. Usually this is greater than Teleport Delay.")]
 	[Range(0.01f, 2.0f)]
 	public float TransitionDuration = 0.5f;
 
@@ -68,9 +70,11 @@ public class TeleportTransitionBlink : TeleportTransition
 			}
 			//float fadeLevel = FadeLevels.Evaluate(elapsedTime / TransitionDuration);
 			//OVRInspector.instance.fader.SetFadeLevel(fadeLevel);
+            fader.SetFadeLevel(FadeLevels.Evaluate(elapsedTime / TransitionDuration));
 		}
 
 		//OVRInspector.instance.fader.SetFadeLevel(0);
+        fader.SetFadeLevel(0);
 
 		LocomotionTeleport.IsTransitioning = false;
 	}
