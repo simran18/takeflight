@@ -30,6 +30,7 @@ public class FlightController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        OVRInput.Get(OVRInput.Button.One);
         if (OVRInput.GetDown(calibrateButton)) {
             Calibrate();
         }
@@ -60,7 +61,7 @@ public class FlightController : MonoBehaviour
 
     float EvaluateDeadzone(float v)
     {
-        return deadZone.Evaluate(Mathf.Abs(v));
+        return (v < 0 ? -1 : 1) * deadZone.Evaluate(Mathf.Abs(v));
     }
 
     void Fly() {
