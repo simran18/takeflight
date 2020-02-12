@@ -53,9 +53,9 @@ public class FlightController : MonoBehaviour
     }
 
     void ApplyDeadzone(ref Vector3 vec) {
-        vec.x = deadZone.Evaluate(EvaluateDeadzone(vec.x));
-        vec.y = deadZone.Evaluate(EvaluateDeadzone(vec.y));
-        vec.z = deadZone.Evaluate(EvaluateDeadzone(vec.z));
+        vec.x = EvaluateDeadzone(vec.x);
+        vec.y = EvaluateDeadzone(vec.y);
+        vec.z = EvaluateDeadzone(vec.z);
     }
 
     float EvaluateDeadzone(float v)
