@@ -30,7 +30,6 @@ public class FlightController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        OVRInput.Get(OVRInput.Button.One);
         if (OVRInput.GetDown(calibrateButton)) {
             Calibrate();
         }
@@ -42,6 +41,7 @@ public class FlightController : MonoBehaviour
     }
 
     void Calibrate() {
+        Debug.Log("Calibrating!");
         leftZeroPosition = OVRInput.GetLocalControllerPosition(leftController);
         rightZeroPosition = OVRInput.GetLocalControllerPosition(rightController);
     }
