@@ -370,10 +370,10 @@ GameObject:
   - component: {fileID: 1156417960469457166}
   - component: {fileID: 1156417960469527884}
   - component: {fileID: 1156417960469559314}
-  - component: {fileID: 475767740}
+  - component: {fileID: 2047667846}
   m_Layer: 0
   m_Name: PlayerController
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b71d1996d67004241a3b69960856ffcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &475767740
+--- !u!114 &2047667846
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -481,6 +481,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftController: 1
   rightController: 2
+  headset: {fileID: 0}
+  trackingSpace: {fileID: 0}
+  leftControllerGO: {fileID: 0}
+  rightControllerGO: {fileID: 0}
+  rb: {fileID: 0}
+  moveSpeed: 5
   calibrateButton: -1
   moveButton: 16384
   leftZeroPosition: {x: 0, y: 0, z: 0}
@@ -497,8 +503,8 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 0.3
       value: 1
@@ -506,12 +512,12 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  playerController: {fileID: 0}
+  playerController: {fileID: 1156417960469457166}
 --- !u!1 &1156417960458689774
 GameObject:
   m_ObjectHideFlags: 0
@@ -816,10 +822,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1156417960458542502}
     m_Modifications:
-    - target: {fileID: 143668, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
-      propertyPath: m_Name
-      value: CustomHandLeft
-      objectReference: {fileID: 0}
     - target: {fileID: 414912, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -863,6 +865,10 @@ PrefabInstance:
     - target: {fileID: 414912, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 143668, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+      propertyPath: m_Name
+      value: CustomHandLeft
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
