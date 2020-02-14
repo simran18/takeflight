@@ -5,9 +5,9 @@ using UnityEngine;
 public class EnlargeBookOnInteract : MonoBehaviour
 {
     public GameObject book;
-    public Vector3f targetPosition;
+    public Vector3 targetPosition;
     public Quaternion targetRotation;
-    public Vector3f targetScale;
+    public Vector3 targetScale;
     public float movingAndRotatingTime = 4f;
     public float scalingTime = 2f;
 
@@ -34,7 +34,7 @@ public class EnlargeBookOnInteract : MonoBehaviour
         var startingRotation = bookTransform.rotation;
         while (elapsedTime < movingAndRotatingTime) {
             var timeRatio = elapsedTime / movingAndRotatingTime;
-            bookTransform.position = Vector3f.Lerp(startingPosition, targetPosition, timeRatio);
+            bookTransform.position = Vector3.Lerp(startingPosition, targetPosition, timeRatio);
             bookTransform.rotation = Quaternion.Lerp(startingRotation, targetRotation, timeRatio);
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -42,13 +42,13 @@ public class EnlargeBookOnInteract : MonoBehaviour
         bookTransform.position = targetPosition;
         bookTransform.rotation = targetRotation;
         elapsedTime = 0f;
-        var startingScale = bookTransform.scale;
+        var startingScale = bookTransform.localScale;
         while (elapsedTime < scalingTime) {
             var timeRatio = elapsedTime / scalingTime;
-            bookTransform.scale = Vector3f.Lerp(startingScale, targetScale, timeRatio);
+            bookTransform.localScale = Vector3.Lerp(startingScale, targetScale, timeRatio);
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        bookTransform.scale = targetScale;
+        bookTransform.localScale = targetScale;
     }
 }
