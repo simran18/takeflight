@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class ButtonThrowHelmet : MonoBehaviour
+/*public class ButtonThrowHelmet : MonoBehaviour
 {
     public Button buttonThrowHelmet;
     // Use this for initialization
@@ -18,4 +18,4 @@ public class ButtonThrowHelmet : MonoBehaviour
         // triggers animation
         Debug.log("helmet thrown")
     }
-}
+} */

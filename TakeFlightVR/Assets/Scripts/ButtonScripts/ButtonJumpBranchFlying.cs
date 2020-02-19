@@ -8,14 +8,14 @@ public class ButtonJumpBranchFlying: MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Button btn= buttonJumpBranchFlying.GetComponent<Button>();
-        btn.onClick.AddListener(TaskOnClick)
+      //  Button btn= buttonJumpBranchFlying.GetComponent<Button>();
+      //  btn.onClick.AddListener(TaskOnClick)
     }
 
     // Update is called once per frame
     void TaskOnClick()
     {
         // triggers animation
-        Debug.log("branch jump to flying animation")
+//        Debug.log("branch jump to flying animation")
     }
 }

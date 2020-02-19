@@ -8,16 +8,16 @@ public class ButtonArmorFlying : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Button btn = buttonArmorFlying.GetComponent<Button>();
-        btn.onClick.AddListener(TaskOnClick)
+  //      Button btn = buttonArmorFlying.GetComponent<Button>();
+//        btn.onClick.AddListener(TaskOnClick)
     }
 
     // Update is called once per frame
     void TaskOnClick()
     {
         // triggers armor animation
-        Debug.log("armor thrown animation");
+        //Debug.log("armor thrown animation");
         // triggers flying mechanism
-        Debug.log("flying mechanism");
+        //Debug.log("flying mechanism");
     }
 }
