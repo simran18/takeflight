@@ -325,12 +325,12 @@ GameObject:
   m_Name: 
   m_EditorClassIdentifier: 
   autoPopulateObjectReferences: 1
-  actualBoundaries: {fileID: 0}
-  actualHeadset: {fileID: 0}
-  actualLeftController: {fileID: 0}
-  actualRightController: {fileID: 0}
-  modelAliasLeftController: {fileID: 0}
-  modelAliasRightController: {fileID: 0}
+  actualBoundaries: {fileID: 891931942}
+  actualHeadset: {fileID: 891931941}
+  actualLeftController: {fileID: 891931940}
+  actualRightController: {fileID: 891931939}
+  modelAliasLeftController: {fileID: 891931938}
+  modelAliasRightController: {fileID: 891931937}
   cachedSystemSDKInfo:
     baseTypeName: VRTK.SDK_BaseSystem
     fallbackTypeName: VRTK.SDK_FallbackSystem
@@ -983,6 +983,42 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
+--- !u!1 &891931937 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1054112583220142, guid: 126d619cf4daa52469682f85c1378b4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 891931936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &891931938 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1983321904398200, guid: 126d619cf4daa52469682f85c1378b4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 891931936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &891931939 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 113768, guid: 126d619cf4daa52469682f85c1378b4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 891931936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &891931940 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 109308, guid: 126d619cf4daa52469682f85c1378b4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 891931936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &891931941 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100002, guid: 126d619cf4daa52469682f85c1378b4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 891931936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &891931942 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 891931936}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1144973326
 >>>>>>> 696b7cb84ed9c87dfc84f17c1954fc19dfd15780
 GameObject:
