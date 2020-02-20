@@ -17,8 +17,11 @@
     "com.unity.timeline": "1.1.0",
     "com.unity.ugui": "1.0.0",
     "com.unity.xr.interaction.toolkit": "0.0.6-preview",
+<<<<<<< HEAD
     "com.unity.xr.oculus.standalone": "1.38.4",
     "com.unity.xr.openvr.standalone": "1.0.5",
+=======
+>>>>>>> 696b7cb84ed9c87dfc84f17c1954fc19dfd15780
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
