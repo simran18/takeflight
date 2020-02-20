@@ -309,8 +309,12 @@ PlayerSettings:
   m_BuildTargetVRSettings:
   - m_BuildTarget: Standalone
     m_Enabled: 1
+
     m_Devices:
     - Oculus
+=======
+    m_Devices: []
+>>>>>>> 6fe8b251f9b2419e52ef94d2c01f0a060d7a5a03
   - m_BuildTarget: Android
     m_Enabled: 0
     m_Devices: []

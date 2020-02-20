@@ -239,7 +239,7 @@ ScriptedImporter:
     - textureName: Clapboard Painted Wood Siding - baseColor
       wrapMode: 0
       filterMode: 1
-      aniso: 1
+      aniso: 2
     - textureName: Clapboard Painted Wood Siding - normal
       wrapMode: 0
       filterMode: 1
