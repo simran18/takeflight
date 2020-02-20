@@ -6,12 +6,13 @@ public class EnlargeBookOnInteract : MonoBehaviour
 {
     public GameObject book;
     public Vector3 targetPosition;
-    public Quaternion targetRotation;
+    public Vector3 targetRotation;
     public Vector3 targetScale;
     public float movingAndRotatingTime = 4f;
     public float scalingTime = 2f;
 
     private Transform bookTransform;
+    private Quaternion targetRotationQuaternion;
 
     void Awake()
     {
@@ -19,6 +20,16 @@ public class EnlargeBookOnInteract : MonoBehaviour
             book = this.gameObject;
         }
         bookTransform = book.transform;
+        targetRotationQuaternion = Quaternion.Euler(targetRotation.x, targetRotation.y, targetRotation.z);
+    }
+
+    bool flag = true;
+
+    void Update() {
+        if (flag) {
+            flag = false;
+            EnlargeBook();
+        }
     }
 
     public void EnlargeBook()
@@ -30,25 +41,19 @@ public class EnlargeBookOnInteract : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         var elapsedTime = 0f;
-        var startingPosition = bookTransform.position;
-        var startingRotation = bookTransform.rotation;
+        var startingPosition = bookTransform.localPosition;
+        var startingRotation = bookTransform.localRotation;
+        var startingScale = bookTransform.localScale;
         while (elapsedTime < movingAndRotatingTime) {
             var timeRatio = elapsedTime / movingAndRotatingTime;
-            bookTransform.position = Vector3.Lerp(startingPosition, targetPosition, timeRatio);
-            bookTransform.rotation = Quaternion.Lerp(startingRotation, targetRotation, timeRatio);
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        bookTransform.position = targetPosition;
-        bookTransform.rotation = targetRotation;
-        elapsedTime = 0f;
-        var startingScale = bookTransform.localScale;
-        while (elapsedTime < scalingTime) {
-            var timeRatio = elapsedTime / scalingTime;
+            bookTransform.localPosition = Vector3.Lerp(startingPosition, targetPosition, timeRatio);
+            bookTransform.localRotation = Quaternion.Lerp(startingRotation, targetRotationQuaternion, timeRatio);
             bookTransform.localScale = Vector3.Lerp(startingScale, targetScale, timeRatio);
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        bookTransform.localPosition = targetPosition;
+        bookTransform.localRotation = targetRotationQuaternion;
         bookTransform.localScale = targetScale;
     }
 }
