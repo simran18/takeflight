@@ -27,12 +27,12 @@ public class EnlargeBookOnInteract : Callable
         base.Awake();
     }
 
-    protected override void OnCall(CallbackBranches.OnCallEndHandler onCallEnd)
+    protected override void OnCall(LogicController.OnCallEndHandler onCallEnd)
     {
         StartCoroutine(MoveAndEnlarge(onCallEnd));
     }
 
-    IEnumerator MoveAndEnlarge(CallbackBranches.OnCallEndHandler onCallEnd)
+    IEnumerator MoveAndEnlarge(LogicController.OnCallEndHandler onCallEnd)
     {
         yield return new WaitForSeconds(1f);
         var elapsedTime = 0f;

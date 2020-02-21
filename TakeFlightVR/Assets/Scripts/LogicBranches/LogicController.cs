@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class CallbackBranches : MonoBehaviour
+public class LogicController : Singleton<LogicController>
 {
     public delegate void OnCallEndHandler(string nextCall);
 
@@ -13,18 +13,31 @@ public class CallbackBranches : MonoBehaviour
 
     public event OnCallEndHandler OnCallEnd;
 
-    public CallbackBranches()
+    public LogicController()
     {
         this.OnCallEnd = HandleOnCallEnd;
+        branchDict = new Dictionary<string, Callable>();
+    }
+
+    public void AddCallable(Callable c)
+    {
+        if (!branchDict.ContainsKey(c.Name))
+        {
+            branchDict[c.Name] = c;
+        }
+    }
+
+    public void RemoveCallable(Callable c)
+    {
+        branchDict.Remove(c.Name);
     }
 
     void Start()
     {
-        branches = branches == null ? new Callable[0] : branches;
-        branchDict = new Dictionary<string, Callable>(branches.Length);
+        branches = branches ?? (new Callable[0]);
         foreach (Callable c in branches)
         {
-            branchDict[c.Name] = c;
+            AddCallable(c);
         }
         nextCall = startPoint;
     }
@@ -33,6 +46,7 @@ public class CallbackBranches : MonoBehaviour
     {
         if (nextCall != null)
         {
+            Debug.Log($"Get into branch: {nextCall.Name}");
             nextCall.Call(this.OnCallEnd);
             nextCall = null;
         }

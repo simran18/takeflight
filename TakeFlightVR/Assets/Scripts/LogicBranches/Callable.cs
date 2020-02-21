@@ -7,6 +7,7 @@ public abstract class Callable : MonoBehaviour
     public bool disableOnStart = true;
     public bool enableOnCall = true;
     public bool disableOnCallEnd = true;
+    public bool autoRegisterSelf = true;
 
     public abstract string Name { get; }
 
@@ -16,9 +17,18 @@ public abstract class Callable : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+        if (autoRegisterSelf)
+        {
+            registerSelf();
+        }
     }
 
-    public void Call(CallbackBranches.OnCallEndHandler onCallEnd)
+    protected void registerSelf()
+    {
+        LogicController.Instance.AddCallable(this);
+    }
+
+    public void Call(LogicController.OnCallEndHandler onCallEnd)
     {
         if (enableOnCall)
         {
@@ -27,7 +37,7 @@ public abstract class Callable : MonoBehaviour
         OnCall(HandleOnCallEnd(onCallEnd));
     }
 
-    private CallbackBranches.OnCallEndHandler HandleOnCallEnd(CallbackBranches.OnCallEndHandler handler)
+    private LogicController.OnCallEndHandler HandleOnCallEnd(LogicController.OnCallEndHandler handler)
     {
         return next =>
         {
@@ -39,5 +49,5 @@ public abstract class Callable : MonoBehaviour
         };
     }
 
-    protected abstract void OnCall(CallbackBranches.OnCallEndHandler onCallEnd);
+    protected abstract void OnCall(LogicController.OnCallEndHandler onCallEnd);
 }
