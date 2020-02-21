@@ -33,6 +33,7 @@ public class MomAsksToGetIntoBucket : Callable
     private IEnumerator OnAction()
     {
         dialog.gameObject.SetActive(true);
+        dialogButtonsRoot.SetActive(true);
         var iter = TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
         while (iter.MoveNext())
         {
@@ -44,6 +45,7 @@ public class MomAsksToGetIntoBucket : Callable
     {
         if (dialogButtonsRoot.activeSelf)
         {
+            dialog.gameObject.SetActive(false);
             dialogButtonsRoot.SetActive(false);
             StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
             OnFlyingBegin();
