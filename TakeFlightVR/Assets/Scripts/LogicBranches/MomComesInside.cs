@@ -11,8 +11,10 @@ public class MomComesInside : Callable
     public Vector3 destinationPosition;
     [Header("After Then")]
     public TextMesh dialog;
+    public GameObject dialogButtonsRoot;
 
     private Transform momTransform;
+    private LogicController.OnCallEndHandler onCallEnd;
 
     public override string Name => "MomComesInside";
 
@@ -23,12 +25,13 @@ public class MomComesInside : Callable
         base.Awake();
     }
 
-    protected override void OnCall(CallbackBranches.OnCallEndHandler onCallEnd)
+    protected override void OnCall(LogicController.OnCallEndHandler onCallEnd)
     {
+        this.onCallEnd = onCallEnd;
         StartCoroutine(Move(onCallEnd));
     }
 
-    IEnumerator Move(CallbackBranches.OnCallEndHandler onCallEnd)
+    IEnumerator Move(LogicController.OnCallEndHandler onCallEnd)
     {
         yield return new WaitForSeconds(1f);
         var iter = MoveCoroutine.Move(momTransform, landPosition, flyingTime);
@@ -42,17 +45,22 @@ public class MomComesInside : Callable
             yield return iter.Current;
         }
         dialog.gameObject.SetActive(true);
+        dialogButtonsRoot.SetActive(true);
         iter = TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
         while (iter.MoveNext())
         {
             yield return iter.Current;
         }
-        yield return new WaitForSeconds(2f);
-        onCallEnd("MomAsksToGetOnBucket");
-        iter = TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
-        while (iter.MoveNext())
+    }
+
+    public void OnButtonLetsGoClick()
+    {
+        if (dialogButtonsRoot.activeSelf)
         {
-            yield return iter.Current;
+            Debug.Log("OnButtonClick");
+            dialogButtonsRoot.SetActive(false);
+            StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 255, 0, .1f));
+            onCallEnd("MomAsksToGetOnBucket");
         }
     }
 }
