@@ -8,6 +8,9 @@ public class AttachGameObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        attachmentTransform.position = transform.position;
+        if (attachmentTransform != null)
+        {
+            attachmentTransform.position = transform.position;
+        }
     }
 }

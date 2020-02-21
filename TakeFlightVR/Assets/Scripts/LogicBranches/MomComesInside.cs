@@ -57,9 +57,8 @@ public class MomComesInside : Callable
     {
         if (dialogButtonsRoot.activeSelf)
         {
-            Debug.Log("OnButtonClick");
             dialogButtonsRoot.SetActive(false);
-            StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 255, 0, .1f));
+            StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
             onCallEnd("MomAsksToGetOnBucket");
         }
     }

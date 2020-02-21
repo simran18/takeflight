@@ -13,17 +13,17 @@ public abstract class Callable : MonoBehaviour
 
     protected virtual void Awake()
     {
+        if (autoRegisterSelf)
+        {
+            RegisterSelf();
+        }
         if (disableOnStart)
         {
             gameObject.SetActive(false);
         }
-        if (autoRegisterSelf)
-        {
-            registerSelf();
-        }
     }
 
-    protected void registerSelf()
+    protected void RegisterSelf()
     {
         LogicController.Instance.AddCallable(this);
     }
