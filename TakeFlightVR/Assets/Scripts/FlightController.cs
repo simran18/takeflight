@@ -7,13 +7,14 @@ public class FlightController : MonoBehaviour
 {
     public OVRInput.Controller leftController = OVRInput.Controller.LTouch;
     public OVRInput.Controller rightController = OVRInput.Controller.RTouch;
-    public GameObject headset;
+    public GameObject headsetGO;
     public GameObject leftControllerGO;
     public GameObject rightControllerGO;
     public Rigidbody rb;
 
     public float moveSpeed = 5;
-    float speedLimit = 50;
+    public float spinSpeed = 1;
+    public float speedLimit = 50;
 
     public OVRInput.Button calibrateButton = OVRInput.Button.One | OVRInput.Button.Two;
     public OVRInput.Button toggleButton = OVRInput.Button.Three | OVRInput.Button.Four;
@@ -24,24 +25,32 @@ public class FlightController : MonoBehaviour
 
     public Vector3 leftFlightVector;
     public Vector3 rightFlightVector;
+    public Vector3 flightVector;
 
     public OVRPlayerController ovrPlayerController;
     public CharacterController characterController;
 
 
     public bool flightEnabled = true;
+    public bool hasToggledFlightThisFrame = false;
     void EnableFlight() {
+        if (hasToggledFlightThisFrame) { return; }
+
         characterController.enabled = false;
         ovrPlayerController.GravityModifier = 0;
         rb.isKinematic = false;
         flightEnabled = true;
+        hasToggledFlightThisFrame = true;
     }
 
     void DisableFlight() {
+        if (hasToggledFlightThisFrame) { return; }
+
         characterController.enabled = true;
         ovrPlayerController.GravityModifier = 0.1f;
         rb.isKinematic = true;
         flightEnabled = false;
+        hasToggledFlightThisFrame = true;
     }
 
     public void ToggleFlight() {
@@ -52,12 +61,22 @@ public class FlightController : MonoBehaviour
         }
     }
 
+    public void Launch(Vector3 launchVector) {
+        EnableFlight();
+        rb.velocity += launchVector;
+    }
+
+    public void Land() {
+        rb.velocity = Vector3.zero;
+        DisableFlight();
+    }
+
 
     // Start is called before the first frame update
     void Start() {
         
         rb = GetComponent<Rigidbody>();
-        if (headset == null) {
+        if (headsetGO == null) {
             Debug.LogError("Headset variable not assigned");
         }
         Calibrate();
@@ -69,6 +88,7 @@ public class FlightController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        hasToggledFlightThisFrame = false;
         if (OVRInput.GetDown(toggleButton)) {
             ToggleFlight();
         }
@@ -81,9 +101,10 @@ public class FlightController : MonoBehaviour
             Calibrate();
         }
 
-        CalculateFlightVectors();
+        CalculateFlightVector();
         
         Vector3 moveVector = leftFlightVector + rightFlightVector;
+        moveVector += headsetGO.transform.forward;
 
         float downwardAlignment = Vector3.Dot(Vector3.down, moveVector.normalized);
         // Don't apply gravity when the controllers are held flat, but apply more if pointed away
@@ -129,7 +150,7 @@ public class FlightController : MonoBehaviour
         rightZeroPosition = OVRInput.GetLocalControllerPosition(rightController);
     }
 
-    void CalculateFlightVectors() {
+    void CalculateFlightVector() {
         //leftFlightVector = OVRInput.GetLocalControllerPosition(leftController) - leftZeroPosition;
         //leftFlightVector = OVRInput.GetLocalControllerRotation(leftController) * -Vector3.forward;
 
@@ -145,18 +166,24 @@ public class FlightController : MonoBehaviour
 
         leftFlightVector = leftControllerGO.transform.forward;
         rightFlightVector = rightControllerGO.transform.forward;
+
+        flightVector = headsetGO.transform.forward;
+
         //leftFlightVector *= -1;
         //rightFlightVector *= -1;
     }
     void ApplySpeedBoost() {
-        Vector3 moveVector = leftFlightVector + rightFlightVector;
+        Vector3 moveVector = flightVector;
+        moveVector.Normalize();
         float triggerSqueeze = OVRInput.Get(OVRInput.Axis1D.Any);
         //playerController.transform.position += moveVector * speed * triggerSqueeze * Time.deltaTime;
 
         // Give a speed bonus if the arms are spread apart
+        /*
         float controllerDistance = Vector3.Distance(leftControllerGO.transform.position, rightControllerGO.transform.position);
         Debug.Log("controllerDistance = " + controllerDistance);
         float spreadBonus = Mathf.Clamp(controllerDistance, 1, 2);
+        */
 
 
         // Take measures to limit the player's speed
@@ -164,7 +191,7 @@ public class FlightController : MonoBehaviour
         Debug.Log("speedLimitFactor = " + speedLimitFactor);
 
         // Move based off of how tightly the trigger is pulled + slow down as the player approaches the speed limit
-        rb.velocity += moveVector * moveSpeed * triggerSqueeze * speedLimitFactor * spreadBonus * Time.deltaTime;
+        rb.velocity += moveVector * moveSpeed * triggerSqueeze * speedLimitFactor /* *spreadBonus */ * Time.deltaTime;
 
         // Clamp the movement speed to a speed limit
         if(rb.velocity.magnitude > speedLimit) {
@@ -175,7 +202,17 @@ public class FlightController : MonoBehaviour
     }
 
     void TwistPlayArea() {
+        float horizontalControllerDistance = Vector3.Distance(rightControllerGO.transform.position - Vector3.up * rightControllerGO.transform.position.y,
+                    leftControllerGO.transform.position - Vector3.up * leftControllerGO.transform.position.y);
         float controllerHeightDifference = leftControllerGO.transform.position.y - rightControllerGO.transform.position.y;
-        ovrPlayerController.transform.Rotate(Vector3.up, controllerHeightDifference);
+
+        float steeringAngle = Mathf.Atan2(controllerHeightDifference, horizontalControllerDistance);
+        Debug.Log(steeringAngle);
+
+        ovrPlayerController.transform.Rotate(Vector3.up, steeringAngle * spinSpeed);
+    }
+
+    private void DEBUG_DrawVector(Vector3 pos, Vector3 vec, Color color) {
+        Debug.DrawLine(pos, pos + vec, color);
     }
 }

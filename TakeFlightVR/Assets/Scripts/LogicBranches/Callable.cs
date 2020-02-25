@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 
 public abstract class Callable : MonoBehaviour
 {
@@ -8,6 +9,43 @@ public abstract class Callable : MonoBehaviour
     public bool enableOnCall = true;
     public bool disableOnCallEnd = true;
     public bool autoRegisterSelf = true;
+
+    # region inspector workflow changes
+    // Working on improving the inspector interface of Callable - 
+    private LogicController.OnCallEndHandler onCallEnd;
+    [Header("Unity Events")]
+    public UnityEvent OnCallEvent;
+    public UnityEvent OnCallEndEvent;
+
+    [Header("Triggers + Transitions")]
+    [SerializeField] private CallTransition[] transitions = new CallTransition[0];
+    
+
+    // This class is just used as a way for transitions to be access via events
+    [System.Serializable]
+    private class CallTransition
+    {
+        public string nextCallName;
+        private LogicController.OnCallEndHandler onCallEnd;
+
+        // Call this from an event to transition to the callable named 'nextCallName'
+        public void TriggerTransition() {
+            onCallEnd(nextCallName);
+        }
+    }
+    
+    // num - The index of 'transitions' to trigger the transition for
+    // End the current call and transitons to the next
+    public void TriggerTransition(int num){
+        transitions[num].TriggerTransition();
+    }
+
+    // nextCallName - The name of the next call to make
+    // End the current call and transitons to the next
+    public void TriggerTransition(string nextCallName) {
+        onCallEnd(nextCallName);
+    }
+    # endregion
 
     public abstract string Name { get; }
 
