@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.Events;
 
-public abstract class Callable : MonoBehaviour
+public abstract class LogicBranch : MonoBehaviour
 {
     [Header("Callable")]
     public bool disableOnStart = true;
@@ -12,10 +12,9 @@ public abstract class Callable : MonoBehaviour
 
     # region inspector workflow changes
     // Working on improving the inspector interface of Callable - 
-    private LogicController.OnCallEndHandler onCallEnd;
     [Header("Unity Events")]
-    public UnityEvent OnCallEvent;
-    public UnityEvent OnCallEndEvent;
+    public UnityEvent<string> OnCallEvent;
+    public UnityEvent<string> OnCallEndEvent;
 
     [Header("Triggers + Transitions")]
     [SerializeField] private CallTransition[] transitions = new CallTransition[0];
@@ -26,24 +25,18 @@ public abstract class Callable : MonoBehaviour
     private class CallTransition
     {
         public string nextCallName;
-        private LogicController.OnCallEndHandler onCallEnd;
-
-        // Call this from an event to transition to the callable named 'nextCallName'
-        public void TriggerTransition() {
-            onCallEnd(nextCallName);
-        }
     }
     
     // num - The index of 'transitions' to trigger the transition for
     // End the current call and transitons to the next
     public void TriggerTransition(int num){
-        transitions[num].TriggerTransition();
+        TriggerTransition(transitions[num].nextCallName);
     }
 
     // nextCallName - The name of the next call to make
     // End the current call and transitons to the next
     public void TriggerTransition(string nextCallName) {
-        onCallEnd(nextCallName);
+        MoveToBranch(nextCallName);
     }
     # endregion
 
@@ -66,26 +59,25 @@ public abstract class Callable : MonoBehaviour
         LogicController.Instance.AddCallable(this);
     }
 
-    public void Call(LogicController.OnCallEndHandler onCallEnd)
+    public void Call()
     {
         if (enableOnCall)
         {
             gameObject.SetActive(true);
         }
-        OnCall(HandleOnCallEnd(onCallEnd));
+        OnCallEvent.Invoke(Name);
+        OnCall();
     }
 
-    private LogicController.OnCallEndHandler HandleOnCallEnd(LogicController.OnCallEndHandler handler)
+    protected abstract void OnCall();
+
+    protected void MoveToBranch(string next)
     {
-        return next =>
+        OnCallEndEvent.Invoke(Name);
+        if (disableOnCallEnd)
         {
-            if (disableOnCallEnd)
-            {
-                gameObject.SetActive(false);
-            }
-            handler(next);
-        };
+            gameObject.SetActive(false);
+        }
+        LogicController.Instance.MoveToBranch(next);
     }
-
-    protected abstract void OnCall(LogicController.OnCallEndHandler onCallEnd);
 }

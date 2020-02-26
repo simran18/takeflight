@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnlargeBookOnInteract : Callable
+public class EnlargeBookOnInteract : LogicBranch
 {
     [Header("Parameters")]
     public GameObject book;
@@ -27,12 +27,12 @@ public class EnlargeBookOnInteract : Callable
         base.Awake();
     }
 
-    protected override void OnCall(LogicController.OnCallEndHandler onCallEnd)
+    protected override void OnCall()
     {
-        StartCoroutine(MoveAndEnlarge(onCallEnd));
+        StartCoroutine(MoveAndEnlarge());
     }
 
-    IEnumerator MoveAndEnlarge(LogicController.OnCallEndHandler onCallEnd)
+    IEnumerator MoveAndEnlarge()
     {
         yield return new WaitForSeconds(1f);
         var elapsedTime = 0f;
@@ -50,6 +50,6 @@ public class EnlargeBookOnInteract : Callable
         bookTransform.localPosition = targetPosition;
         bookTransform.localRotation = targetRotationQuaternion;
         bookTransform.localScale = targetScale;
-        onCallEnd("MomComesInside");
+        MoveToBranch("MomComesInside");
     }
 }

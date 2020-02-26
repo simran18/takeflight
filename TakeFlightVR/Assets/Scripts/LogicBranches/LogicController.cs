@@ -1,25 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+
 public class LogicController : Singleton<LogicController>
 {
-    public delegate void OnCallEndHandler(string nextCall);
 
-    public Callable[] branches;
-    public Callable startPoint;
+    public LogicBranch[] branches;
+    public LogicBranch startPoint;
 
-    private Dictionary<string, Callable> branchDict;
-    private Callable nextCall;
-
-    public event OnCallEndHandler OnCallEnd;
+    private Dictionary<string, LogicBranch> branchDict;
+    private LogicBranch nextCall;
 
     public LogicController()
     {
-        this.OnCallEnd = HandleOnCallEnd;
-        branchDict = new Dictionary<string, Callable>();
+        branchDict = new Dictionary<string, LogicBranch>();
     }
 
-    public void AddCallable(Callable c)
+    public void AddCallable(LogicBranch c)
     {
         if (!branchDict.ContainsKey(c.Name))
         {
@@ -27,15 +24,15 @@ public class LogicController : Singleton<LogicController>
         }
     }
 
-    public void RemoveCallable(Callable c)
+    public void RemoveCallable(LogicBranch c)
     {
         branchDict.Remove(c.Name);
     }
 
     void Start()
     {
-        branches = branches ?? (new Callable[0]);
-        foreach (Callable c in branches)
+        branches = branches ?? (new LogicBranch[0]);
+        foreach (LogicBranch c in branches)
         {
             AddCallable(c);
         }
@@ -47,14 +44,15 @@ public class LogicController : Singleton<LogicController>
         if (nextCall != null)
         {
             Debug.Log($"Get into branch: {nextCall.Name}");
-            nextCall.Call(this.OnCallEnd);
+            var c = nextCall;
             nextCall = null;
+            c.Call();
         }
     }
 
-    private void HandleOnCallEnd(string nextCall)
+    public void MoveToBranch(string branch)
     {
-        Debug.Assert(branchDict.ContainsKey(nextCall));
-        this.nextCall = branchDict[nextCall];
+        Debug.Assert(branchDict.ContainsKey(branch));
+        this.nextCall = branchDict[branch];
     }
 }

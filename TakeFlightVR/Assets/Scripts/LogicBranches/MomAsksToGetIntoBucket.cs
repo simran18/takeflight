@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MomAsksToGetIntoBucket : Callable
+public class MomAsksToGetIntoBucket : LogicBranch
 {
     public GameObject bin;
     [Header("After Then")]
@@ -10,7 +10,6 @@ public class MomAsksToGetIntoBucket : Callable
 
     private AttachGameObject attacher;
     private Transform playerTransform;
-    private LogicController.OnCallEndHandler onCallEnd;
 
     public override string Name => "MomAsksToGetOnBucket";
 
@@ -23,9 +22,8 @@ public class MomAsksToGetIntoBucket : Callable
         base.Awake();
     }
 
-    protected override void OnCall(LogicController.OnCallEndHandler onCallEnd)
+    protected override void OnCall()
     {
-        this.onCallEnd = onCallEnd;
         attacher.gameObject.SetActive(false);
         StartCoroutine(OnAction());
     }
