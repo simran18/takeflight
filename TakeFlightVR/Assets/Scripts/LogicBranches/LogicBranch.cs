@@ -65,7 +65,8 @@ public abstract class LogicBranch : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
-        OnCallEvent.Invoke(Name);
+
+        OnCallEvent?.Invoke(Name);
         OnCall();
     }
 
