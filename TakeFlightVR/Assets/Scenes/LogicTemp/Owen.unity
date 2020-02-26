@@ -7981,10 +7981,28 @@ PrefabInstance:
       propertyPath: dialogButtonsRoot
       value: 
       objectReference: {fileID: 1010135910}
+    - target: {fileID: 352842763, guid: 89cd1c3bbdcd45b449c7324a85664bb9, type: 3}
+      propertyPath: letsgoButton
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2090752872, guid: 89cd1c3bbdcd45b449c7324a85664bb9, type: 3}
       propertyPath: dialogButtonsRoot
       value: 
       objectReference: {fileID: 1026722662}
+    - target: {fileID: 1445693720, guid: 89cd1c3bbdcd45b449c7324a85664bb9, type: 3}
+      propertyPath: m_Text
+      value: "Rise and shine! Wanna go pick some\nberries with me?\n\nPress [A]: \"Let\u2019s
+        go!\""
+      objectReference: {fileID: 0}
+    - target: {fileID: 3660678445478923647, guid: 89cd1c3bbdcd45b449c7324a85664bb9,
+        type: 3}
+      propertyPath: disableOnLeave
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1057792267, guid: 89cd1c3bbdcd45b449c7324a85664bb9, type: 3}
+      propertyPath: m_Text
+      value: "Hang on, not yet! Put these on.\n\nPress [A]: \"Okay fine\u2026\""
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89cd1c3bbdcd45b449c7324a85664bb9, type: 3}
 --- !u!114 &835470771 stripped

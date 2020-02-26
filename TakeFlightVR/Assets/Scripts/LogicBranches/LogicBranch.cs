@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public abstract class LogicBranch : MonoBehaviour
 {
     [Header("Callable")]
-    public bool disableOnStart = true;
+    [FormerlySerializedAs("disableOnStart")]
+    public bool disableOnAwake = true;
+    [FormerlySerializedAs("enableOnCall")]
     public bool enableOnCall = true;
-    public bool disableOnCallEnd = true;
+    [FormerlySerializedAs("disableOnCallEnd")]
+    public bool disableOnLeave = true;
     public bool autoRegisterSelf = true;
 
     # region inspector workflow changes
@@ -48,7 +51,7 @@ public abstract class LogicBranch : MonoBehaviour
         {
             RegisterSelf();
         }
-        if (disableOnStart)
+        if (disableOnAwake)
         {
             gameObject.SetActive(false);
         }
@@ -75,7 +78,7 @@ public abstract class LogicBranch : MonoBehaviour
     protected void MoveToBranch(string next)
     {
         OnCallEndEvent.Invoke(Name);
-        if (disableOnCallEnd)
+        if (disableOnLeave)
         {
             gameObject.SetActive(false);
         }

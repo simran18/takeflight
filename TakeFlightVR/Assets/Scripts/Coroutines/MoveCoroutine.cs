@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MoveCoroutine
+public static class MoveCoroutine
 {
     public static IEnumerator Move(Transform transform, Vector3 targetPosition, float movingTime)
     {
