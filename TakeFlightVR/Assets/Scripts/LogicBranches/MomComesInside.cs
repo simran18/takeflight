@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MomComesInside : Callable
+public class MomComesInside : LogicBranch
 {
     [Header("While Moving Inside")]
     public GameObject mom;
@@ -14,7 +14,6 @@ public class MomComesInside : Callable
     public GameObject dialogButtonsRoot;
 
     private Transform momTransform;
-    private LogicController.OnCallEndHandler onCallEnd;
 
     public override string Name => "MomComesInside";
 
@@ -25,13 +24,12 @@ public class MomComesInside : Callable
         base.Awake();
     }
 
-    protected override void OnCall(LogicController.OnCallEndHandler onCallEnd)
+    protected override void OnCall()
     {
-        this.onCallEnd = onCallEnd;
-        StartCoroutine(Move(onCallEnd));
+        StartCoroutine(Move());
     }
 
-    IEnumerator Move(LogicController.OnCallEndHandler onCallEnd)
+    IEnumerator Move()
     {
         yield return new WaitForSeconds(1f);
         var iter = MoveCoroutine.Move(momTransform, landPosition, flyingTime);
@@ -59,7 +57,7 @@ public class MomComesInside : Callable
         {
             dialogButtonsRoot.SetActive(false);
             StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
-            onCallEnd("MomAsksToGetOnBucket");
+            MoveToBranch("MomAsksToGetOnBucket");
         }
     }
 }
