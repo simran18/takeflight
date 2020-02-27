@@ -103,8 +103,7 @@ public class FlightController : MonoBehaviour
 
         CalculateFlightVector();
         
-        Vector3 moveVector = leftFlightVector + rightFlightVector;
-        moveVector += headsetGO.transform.forward;
+        Vector3 moveVector = flightVector;
 
         float downwardAlignment = Vector3.Dot(Vector3.down, moveVector.normalized);
         // Don't apply gravity when the controllers are held flat, but apply more if pointed away
@@ -167,7 +166,12 @@ public class FlightController : MonoBehaviour
         leftFlightVector = leftControllerGO.transform.forward;
         rightFlightVector = rightControllerGO.transform.forward;
 
-        flightVector = headsetGO.transform.forward;
+        //leftFlightVector = leftControllerGO.transform.localPosition.y * Vector3.up;
+        //rightFlightVector = rightControllerGO.transform.localPosition.y * Vector3.up;
+
+
+        flightVector = leftFlightVector + rightFlightVector;
+        flightVector += headsetGO.transform.forward;
 
         //leftFlightVector *= -1;
         //rightFlightVector *= -1;
