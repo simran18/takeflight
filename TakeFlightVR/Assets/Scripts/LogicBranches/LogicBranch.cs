@@ -51,7 +51,7 @@ public abstract class LogicBranch : MonoBehaviour
 
     protected void MoveToBranch(string next)
     {
-        OnCallEndEvent.Invoke(Name);
+        OnCallEndEvent?.Invoke(Name);
         if (disableOnLeave)
         {
             gameObject.SetActive(false);

@@ -32,7 +32,7 @@ public static class OVRButtonCoroutine
     public static IEnumerator WaitForButtonDown(OVRInput.Button button, OVRButtonEvent callback, float timeout = -1)
     {
         var elapsedTime = 0f;
-        while (timeout == -1 || elapsedTime < timeout)
+        while (timeout == -1f || elapsedTime < timeout)
         {
             elapsedTime += Time.deltaTime;
             if (OVRInput.GetDown(button))
@@ -47,7 +47,7 @@ public static class OVRButtonCoroutine
                 break;
             }
 #endif
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -56,7 +56,7 @@ public static class OVRButtonCoroutine
     public static IEnumerator WaitForAnyButtonDown(OVRInput.Button[] buttons, OVRButtonEvent callback, float timeout = -1)
     {
         var elapsedTime = 0f;
-        while (timeout == -1 || elapsedTime < timeout)
+        while (timeout == -1f || elapsedTime < timeout)
         {
             elapsedTime += Time.deltaTime;
             foreach (var button in buttons)
@@ -74,7 +74,7 @@ public static class OVRButtonCoroutine
                 }
 #endif
             }
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
     }
 }

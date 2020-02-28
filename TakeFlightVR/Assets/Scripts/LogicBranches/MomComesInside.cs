@@ -44,7 +44,7 @@ public class MomComesInside : LogicBranch
         dialog.gameObject.SetActive(true);
         momVoice.Play();
         yield return TextMeshFadeCoroutine.FadeIn(dialog);
-        OVRButtonCoroutine.WaitForButtonDown(dialogButton, onButtonDown);
+        yield return OVRButtonCoroutine.WaitForButtonDown(dialogButton, onButtonDown);
     }
 
     public void OnButtonLetsGoClick(OVRInput.Button button)

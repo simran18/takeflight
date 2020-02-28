@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class EnlargeBookOnInteract : LogicBranch
 {
@@ -11,6 +12,11 @@ public class EnlargeBookOnInteract : LogicBranch
     public Vector3 targetScale;
     public float movingAndRotatingTime = 4f;
     public float scalingTime = 2f;
+    [Header("Dialog Button")]
+    public GameObject buttonDialog;
+    public OVRInput.Button yesButton = OVRInput.Button.One;
+    public float buttonShowingDelay = 1f;
+    public OVRButtonEvent dialogButtonEvent;
 
     private Transform bookTransform;
     private Quaternion targetRotationQuaternion;
@@ -19,9 +25,9 @@ public class EnlargeBookOnInteract : LogicBranch
 
     protected override void Awake()
     {
-        if (book == null) {
-            book = this.gameObject;
-        }
+        if (book == null) book = this.gameObject;
+        if (dialogButtonEvent == null) dialogButtonEvent = new OVRButtonEvent();
+        dialogButtonEvent.AddListener(OnYesButtonTriggered);
         bookTransform = book.transform;
         targetRotationQuaternion = Quaternion.Euler(targetRotation.x, targetRotation.y, targetRotation.z);
         base.Awake();
@@ -29,6 +35,7 @@ public class EnlargeBookOnInteract : LogicBranch
 
     protected override void OnCall()
     {
+        buttonDialog.SetActive(false);
         StartCoroutine(MoveAndEnlarge());
     }
 
@@ -50,6 +57,13 @@ public class EnlargeBookOnInteract : LogicBranch
         bookTransform.localPosition = targetPosition;
         bookTransform.localRotation = targetRotationQuaternion;
         bookTransform.localScale = targetScale;
+        yield return new WaitForSeconds(buttonShowingDelay);
+        buttonDialog.SetActive(true);
+        yield return OVRButtonCoroutine.WaitForButtonDown(yesButton, dialogButtonEvent);
+    }
+
+    public void OnYesButtonTriggered(OVRInput.Button button)
+    {
         MoveToBranch("MomComesInside");
     }
 }
