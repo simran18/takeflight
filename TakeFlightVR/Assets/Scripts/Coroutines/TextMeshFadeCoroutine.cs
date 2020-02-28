@@ -18,4 +18,8 @@ public static class TextMeshFadeCoroutine
         }
         mesh.color = targetColor;
     }
+
+    public static IEnumerator FadeIn(TextMesh mesh, float duration) => Fade(mesh, 0f, 1f, duration);
+
+    public static IEnumerator FadeOut(TextMesh mesh, float duration) => Fade(mesh, 1f, 0f, duration);
 }
