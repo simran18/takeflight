@@ -144,8 +144,9 @@ public class FlightController : MonoBehaviour
     }
 
     void Calibrate() {
-        Debug.Log("Calibrating()");
+        UpdatePositionalInputInfo();
         handZeroHeight = avgControllerLocalPosition.y;
+        Debug.Log("Calibrating() to " + handZeroHeight);
     }
 
 
