@@ -11,7 +11,9 @@ public class MomComesInside : LogicBranch
     public Vector3 destinationPosition;
     [Header("After Then")]
     public TextMesh dialog;
-    public GameObject dialogButtonsRoot;
+    public OVRInput.Button dialogButton = OVRInput.Button.One;
+    [Header("Unity Event")]
+    public OVRButtonEvent onButtonDown;
 
     private Transform momTransform;
 
@@ -19,6 +21,8 @@ public class MomComesInside : LogicBranch
 
     protected override void Awake()
     {
+        if (onButtonDown == null) onButtonDown = new OVRButtonEvent();
+        onButtonDown.AddListener(OnButtonLetsGoClick);
         momTransform = mom.transform;
         dialog.gameObject.SetActive(false);
         base.Awake();
@@ -32,32 +36,16 @@ public class MomComesInside : LogicBranch
     IEnumerator Move()
     {
         yield return new WaitForSeconds(1f);
-        var iter = MoveCoroutine.Move(momTransform, landPosition, flyingTime);
-        while (iter.MoveNext())
-        {
-            yield return iter.Current;
-        }
-        iter = MoveCoroutine.Move(momTransform, destinationPosition, movingTime);
-        while (iter.MoveNext())
-        {
-            yield return iter.Current;
-        }
+        yield return MoveCoroutine.Move(momTransform, landPosition, flyingTime);
+        yield return MoveCoroutine.Move(momTransform, destinationPosition, movingTime);
         dialog.gameObject.SetActive(true);
-        dialogButtonsRoot.SetActive(true);
-        iter = TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
-        while (iter.MoveNext())
-        {
-            yield return iter.Current;
-        }
+        yield return TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
+        OVRButtonCoroutine.WaitForButtonDown(dialogButton, onButtonDown);
     }
 
-    public void OnButtonLetsGoClick()
+    public void OnButtonLetsGoClick(OVRInput.Button button)
     {
-        if (dialogButtonsRoot.activeSelf)
-        {
-            dialogButtonsRoot.SetActive(false);
-            StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
-            MoveToBranch("MomAsksToGetOnBucket");
-        }
+        StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
+        MoveToBranch("MomAsksToGetOnBucket");
     }
 }

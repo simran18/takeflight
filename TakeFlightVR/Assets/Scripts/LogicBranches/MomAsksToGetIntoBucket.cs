@@ -6,7 +6,9 @@ public class MomAsksToGetIntoBucket : LogicBranch
     public GameObject bin;
     [Header("After Then")]
     public TextMesh dialog;
-    public GameObject dialogButtonsRoot;
+    public OVRInput.Button dialogButton = OVRInput.Button.One;
+    [Header("Unity Event")]
+    public OVRButtonEvent onButtonDown;
 
     private AttachGameObject attacher;
     private Transform playerTransform;
@@ -15,6 +17,8 @@ public class MomAsksToGetIntoBucket : LogicBranch
 
     protected override void Awake()
     {
+        if (onButtonDown == null) onButtonDown = new OVRButtonEvent();
+        onButtonDown.AddListener(OnWearButtonClick);
         var player = GameObject.FindGameObjectWithTag("Player");
         playerTransform = player.transform;
         attacher = bin.GetComponentInChildren<AttachGameObject>();
@@ -31,23 +35,15 @@ public class MomAsksToGetIntoBucket : LogicBranch
     private IEnumerator OnAction()
     {
         dialog.gameObject.SetActive(true);
-        dialogButtonsRoot.SetActive(true);
-        var iter = TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
-        while (iter.MoveNext())
-        {
-            yield return iter.Current;
-        }
+        yield return TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
+        OVRButtonCoroutine.WaitForButtonDown(dialogButton, onButtonDown);
     }
 
-    public void OnWearButtonClick()
+    public void OnWearButtonClick(OVRInput.Button button)
     {
-        if (dialogButtonsRoot.activeSelf)
-        {
-            dialog.gameObject.SetActive(false);
-            dialogButtonsRoot.SetActive(false);
-            StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
-            OnFlyingBegin();
-        }
+        dialog.gameObject.SetActive(false);
+        StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
+        OnFlyingBegin();
     }
 
     public void OnFlyingBegin()

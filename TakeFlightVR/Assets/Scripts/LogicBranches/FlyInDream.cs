@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using OVR;
 
-public class FlyInDream : Callable
+public class FlyInDream : LogicBranch
 {
     public override string Name => "FlyInDream";
 
@@ -24,6 +24,9 @@ public class FlyInDream : Callable
     [SerializeField] private int currentContentIndex = 0;
     [SerializeField] private UIContent[] tutorialContent = new UIContent[0];
 
+    [Header("Next Logic Branch")]
+    public string nextLogicBranchName;
+
     // returns true once at or past the last slide
     [SerializeField] private bool showedAllContent => currentContentIndex >= tutorialContent.Length - 1;
 
@@ -38,7 +41,7 @@ public class FlyInDream : Callable
     }
     #endregion
 
-    protected override void OnCall(LogicController.OnCallEndHandler onCallEnd) {
+    protected override void OnCall() {
         StartCoroutine(ManageFlyingTutorialUI());
     }
 
@@ -63,7 +66,8 @@ public class FlyInDream : Callable
 
             continuePrompt.SetActive(false);
         }
-
+        
+        MoveToBranch(nextLogicBranchName);
     }
 
     // A public function that can be accessed in a UnityEvent to trigger progression

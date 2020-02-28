@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TextMeshFadeCoroutine
+public static class TextMeshFadeCoroutine
 {
     public static IEnumerator Fade(TextMesh mesh, float fromAlpha, float toAlpha, float duration)
     {
