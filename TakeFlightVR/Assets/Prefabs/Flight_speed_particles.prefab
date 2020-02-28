@@ -4768,3 +4768,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
   ps: {fileID: 6915113681461991765}
+  orbitalSpeedMultipliers: {x: 0.03, y: -10, z: 0}
