@@ -30,7 +30,7 @@ public class FlightPathConstraint : MonoBehaviour
     public void AddForceTowardsCenter() {
         float distance = GetDistanceFromPathCenter(rbToConstrain.transform.position);
         float forceRatio = Mathf.InverseLerp(softConstraintDistance, hardConstraintDistance + Mathf.Epsilon, distance);
-        Debug.Log("Distance = " + distance + "\t\tForceRatio = " + forceRatio);
+        //Debug.Log("Distance = " + distance + "\t\tForceRatio = " + forceRatio);
         Vector3 correctiveVector = -GetVectorFromPathCenter(rbToConstrain.transform.position);
         Debug.DrawLine(rbToConstrain.transform.position, rbToConstrain.transform.position + correctiveVector);
         rbToConstrain.velocity = Vector3.Lerp(rbToConstrain.velocity.normalized, correctiveVector.normalized, forceRatio).normalized * rbToConstrain.velocity.magnitude;
