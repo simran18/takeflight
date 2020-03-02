@@ -47,7 +47,7 @@ public class HelmetFall : LogicBranch
     // Mom moves to the ground to the helmet
     IEnumerator Animate()
     {
-        animationController.SetBool("helmetFall", true); // update name of animation
+        animationController.SetBool("helmetFall", true); 
         animationController.SetBool("helmetFall", false);
         yield return TextMeshFadeCoroutine.FadeIn(momDialog);
         momHelmetVoice.Play();
@@ -65,7 +65,6 @@ public class HelmetFall : LogicBranch
     {
         buttonText.gameObject.SetActive(false);
         StartCoroutine(TextMeshFadeCoroutine.FadeOut(buttonText));
-        animationController.SetBool("playerFly", true); // update name of animation
         MoveToBranch("SceneOwenFlying");
     }
 }
