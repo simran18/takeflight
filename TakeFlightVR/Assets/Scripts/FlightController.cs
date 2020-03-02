@@ -50,14 +50,19 @@ public class FlightController : MonoBehaviour
     }
 
     void DisableFlight() {
+        DisableFlight(initialGravityModifier);
+    }
+
+    void DisableFlight(float newGravityModifier) {
         if (hasToggledFlightThisFrame) { return; }
 
         characterController.enabled = true;
-        ovrPlayerController.GravityModifier = 0.1f;
+        ovrPlayerController.GravityModifier = newGravityModifier;
         rb.isKinematic = true;
         flightEnabled = false;
         hasToggledFlightThisFrame = true;
     }
+
 
     public void ToggleFlight() {
         if (flightEnabled) {
@@ -77,10 +82,12 @@ public class FlightController : MonoBehaviour
         DisableFlight();
     }
 
+    private float initialGravityModifier;
 
     // Start is called before the first frame update
     void Start() {
-        
+        initialGravityModifier = ovrPlayerController.GravityModifier;
+
         rb = GetComponent<Rigidbody>();
         if (headsetGO == null) {
             Debug.LogError("Headset variable not assigned");
