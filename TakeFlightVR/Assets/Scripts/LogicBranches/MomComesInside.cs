@@ -7,11 +7,14 @@ public class MomComesInside : LogicBranch
     public GameObject mom;
     public float flyingTime;
     public float movingTime;
+    // 514.7, 526.36, 542.7
     public Vector3 landPosition;
+    // 508.54, 526.36, 771.76
     public Vector3 destinationPosition;
     [Header("After Then")]
     public TextMesh dialog;
     public OVRInput.Button dialogButton = OVRInput.Button.One;
+    public AudioSource momVoice;
     [Header("Unity Event")]
     public OVRButtonEvent onButtonDown;
 
@@ -39,13 +42,14 @@ public class MomComesInside : LogicBranch
         yield return MoveCoroutine.Move(momTransform, landPosition, flyingTime);
         yield return MoveCoroutine.Move(momTransform, destinationPosition, movingTime);
         dialog.gameObject.SetActive(true);
-        yield return TextMeshFadeCoroutine.Fade(dialog, 0, 1, 1);
-        OVRButtonCoroutine.WaitForButtonDown(dialogButton, onButtonDown);
+        momVoice.Play();
+        yield return TextMeshFadeCoroutine.FadeIn(dialog);
+        yield return OVRButtonCoroutine.WaitForButtonDown(dialogButton, onButtonDown);
     }
 
     public void OnButtonLetsGoClick(OVRInput.Button button)
     {
-        StartCoroutine(TextMeshFadeCoroutine.Fade(dialog, 1, 0, .1f));
+        StartCoroutine(TextMeshFadeCoroutine.FadeOut(dialog));
         MoveToBranch("MomAsksToGetOnBucket");
     }
 }

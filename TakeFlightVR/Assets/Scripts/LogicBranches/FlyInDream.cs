@@ -24,11 +24,14 @@ public class FlyInDream : LogicBranch
     [SerializeField] private int currentContentIndex = 0;
     [SerializeField] private UIContent[] tutorialContent = new UIContent[0];
 
-    [Header("Next Logic Branch")]
+    [Header("Transitioning")]
+    public float timeLimit = 60;
+    public int targetNumberOfRings = 5;
     public string nextLogicBranchName;
 
     // returns true once at or past the last slide
     [SerializeField] private bool showedAllContent => currentContentIndex >= tutorialContent.Length - 1;
+    [SerializeField] private int ringCount = 0;
 
     # region private classes
     // UI Content groups together all of the information that should be displayed at once
@@ -43,6 +46,7 @@ public class FlyInDream : LogicBranch
 
     protected override void OnCall() {
         StartCoroutine(ManageFlyingTutorialUI());
+        StartCoroutine(RunTimeLimitTimer(timeLimit));
     }
 
     // Start is called before the first frame update
@@ -51,10 +55,10 @@ public class FlyInDream : LogicBranch
     }
 
     IEnumerator ManageFlyingTutorialUI() {
-        UpdateWithUIContent(tutorialContent[currentContentIndex]);
+        UpdateTutorialWithUIContent(tutorialContent[currentContentIndex]);
         for( ; currentContentIndex < tutorialContent.Length; currentContentIndex++) {
             UIContent currentContent = tutorialContent[currentContentIndex];
-            UpdateWithUIContent(currentContent);
+            UpdateTutorialWithUIContent(currentContent);
             yield return new WaitForSecondsRealtime(minimumWaitTimeBeforeTextUpdate);
             continuePrompt.SetActive(true);
 
@@ -66,16 +70,35 @@ public class FlyInDream : LogicBranch
 
             continuePrompt.SetActive(false);
         }
-        
+    }
+
+    IEnumerator CountNumberOfRings() {
+        yield return new WaitUntil(() => ringCount > targetNumberOfRings);
+        Debug.Log("CountNumberOfRings() triggered next logic branch");
+
         MoveToBranch(nextLogicBranchName);
+        StopAllCoroutines();
+    }
+
+    public void IncrementRingCount() {
+        ringCount++;
+    }
+
+    // Limits the player's time in this callable to the given number or seconds
+    IEnumerator RunTimeLimitTimer(float seconds) {
+        yield return new WaitForSeconds(seconds);
+        Debug.Log("RunTimeLimitTimer(" + seconds+") triggered next logic branch");
+
+        MoveToBranch(nextLogicBranchName);
+        StopAllCoroutines();
     }
 
     // A public function that can be accessed in a UnityEvent to trigger progression
-    public void TriggerProgressToNext() {
+    public void TriggerProgressToNextTutorialSlide() {
         progressToNext = true;
     }
 
-    private void UpdateWithUIContent(UIContent content) {
+    private void UpdateTutorialWithUIContent(UIContent content) {
         textbox.text = content.text;
         img.sprite = content.sprite;
         continuePrompt.SetActive(false);

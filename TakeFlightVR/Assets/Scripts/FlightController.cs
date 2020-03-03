@@ -17,7 +17,9 @@ public class FlightController : MonoBehaviour
     public float strafeSpeed = 1;
     [Space]
     public float moveSpeed = 5;
-    public float speedLimit = 50;
+    public float minSpeed = 3;
+    public float maxSpeed = 50;
+    public float desiredSpeed = 20;
     [Space]
 
     public OVRInput.Button calibrateButton = OVRInput.Button.One | OVRInput.Button.Two;
@@ -48,14 +50,19 @@ public class FlightController : MonoBehaviour
     }
 
     void DisableFlight() {
+        DisableFlight(initialGravityModifier);
+    }
+
+    void DisableFlight(float newGravityModifier) {
         if (hasToggledFlightThisFrame) { return; }
 
         characterController.enabled = true;
-        ovrPlayerController.GravityModifier = 0.1f;
+        ovrPlayerController.GravityModifier = newGravityModifier;
         rb.isKinematic = true;
         flightEnabled = false;
         hasToggledFlightThisFrame = true;
     }
+
 
     public void ToggleFlight() {
         if (flightEnabled) {
@@ -75,10 +82,12 @@ public class FlightController : MonoBehaviour
         DisableFlight();
     }
 
+    private float initialGravityModifier;
 
     // Start is called before the first frame update
     void Start() {
-        
+        initialGravityModifier = ovrPlayerController.GravityModifier;
+
         rb = GetComponent<Rigidbody>();
         if (headsetGO == null) {
             Debug.LogError("Headset variable not assigned");
@@ -94,6 +103,7 @@ public class FlightController : MonoBehaviour
         hasToggledFlightThisFrame = false;
         if (OVRInput.GetDown(toggleButton)) { ToggleFlight(); }
         if (OVRInput.GetDown(calibrateButton)) { Calibrate(); }
+        if (ovrPlayerController.Teleported) { DisableFlight(); }
         if (!flightEnabled) { return; }
         
 
@@ -114,38 +124,46 @@ public class FlightController : MonoBehaviour
         }
 
         rb.velocity += flightVector * moveSpeed/10 * Time.deltaTime;
-
-        if (OVRInput.Get(moveButton)) {
-            ApplySpeedBoost();
-        }
-        
-        
-        // Redirect more if the controllers are further apart
-
-
-
+       
         // Redirect a portion of the velocity towards where the controllers are pointing
         rb.velocity = Vector3.Lerp(flightVector, rb.velocity, 0.3f).normalized * rb.velocity.magnitude;
 
-        // Slow down if pointing upward, but less so if at a low speed
-        /*
-        float speedLimitFactor = Mathf.Clamp01((speedLimit - rb.velocity.magnitude) / speedLimit);
-        float airBrakeAmount = Mathf.Clamp01(-downwardAlignment) * (1 - speedLimitFactor);
-        airBrakeAmount = Mathf.Clamp01(airBrakeAmount - 0.5f);
-        airBrakeAmount /= 10;
-        rb.velocity -= rb.velocity.normalized * airBrakeAmount;
-        */
 
-        // Clamp the movement speed to a speed limit
-        
-        if(rb.velocity.magnitude > speedLimit) {
-            rb.velocity = rb.velocity.normalized * speedLimit;
+        // Speed Boost
+        float primarySqueeze = OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
+        primarySqueeze *= Mathf.Abs(desiredSpeed - minSpeed);
+        // Air Brake
+        float secondarySqueeze = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger);
+        secondarySqueeze *= Mathf.Abs(maxSpeed - desiredSpeed);
+        // Modify speed
+        ManageSpeed((primarySqueeze - secondarySqueeze));
+    }
+
+    void ManageSpeed(float desiredSpeedModifier = 0) {
+        // Make sure that velocity always has a direction
+        if (rb.velocity == Vector3.zero) {
+            rb.velocity = headsetGO.transform.forward * Mathf.Epsilon;
         }
+
+        // Enforce the minimum speed
+        if (rb.velocity.magnitude < minSpeed) {
+            rb.velocity = rb.velocity.normalized * minSpeed;
+        }
+        // Enforce the maximum speed
+        if (rb.velocity.magnitude > maxSpeed) {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+
+        // Try to push the speed towards the desired speed
+        float differenceFromDesiredSpeed = desiredSpeed - rb.velocity.magnitude;
+        differenceFromDesiredSpeed += desiredSpeedModifier;
+        rb.velocity += rb.velocity.normalized * Mathf.Lerp(0, differenceFromDesiredSpeed, 0.95f) * Time.deltaTime;
     }
 
     void Calibrate() {
-        Debug.Log("Calibrating()");
+        UpdatePositionalInputInfo();
         handZeroHeight = avgControllerLocalPosition.y;
+        Debug.Log("Calibrating() to " + handZeroHeight);
     }
 
 
@@ -157,7 +175,6 @@ public class FlightController : MonoBehaviour
         CalculateFlightVector();
     }
     void CalculateFlightVector() {
-        Vector3 leftFlightVector, rightFlightVector;
         const bool USE_POINTER_FLIGHT_VECTOR = false; // otherwise uses positional vectors instead of the direction that the controllers are pointing
 
         if (USE_POINTER_FLIGHT_VECTOR) {
@@ -168,11 +185,8 @@ public class FlightController : MonoBehaviour
         }
         flightVector.Normalize();
 
-        const float HEADSET_FLIGHT_VECTOR_BIAS = 0.5f;
+        const float HEADSET_FLIGHT_VECTOR_BIAS = 0.5f; // How much should the look direction impact steering? 0 doesn't use the headset, 1 uses only the headset
         flightVector = Vector3.Lerp(flightVector, headsetGO.transform.forward, HEADSET_FLIGHT_VECTOR_BIAS);
-
-        //leftFlightVector *= -1;
-        //rightFlightVector *= -1;
     }
 
     void CalculateSteeringAngle() {
@@ -204,20 +218,6 @@ public class FlightController : MonoBehaviour
         spreadRedirectionBonus = Mathf.Lerp(spreadRedirectionBonus * Mathf.Abs(downwardAlignment), spreadRedirectionBonus, 0.5f);
 
         return spreadRedirectionBonus;
-    }
-
-    void ApplySpeedBoost() {
-        float triggerSqueeze = OVRInput.Get(OVRInput.Axis1D.Any);
-        //playerController.transform.position += moveVector * speed * triggerSqueeze * Time.deltaTime;
-
-        // Take measures to limit the player's speed
-        float speedLimitFactor = ((speedLimit - rb.velocity.magnitude) / speedLimit);
-        Debug.Log("speedLimitFactor = " + speedLimitFactor);
-
-        // Move based off of how tightly the trigger is pulled + slow down as the player approaches the speed limit
-        rb.velocity += flightVector.normalized * moveSpeed * triggerSqueeze /* * speedLimitFactor  *spreadBonus */ * Time.deltaTime;
-
-        // playerController.Teleported = true;
     }
 
     void TwistPlayArea() {
