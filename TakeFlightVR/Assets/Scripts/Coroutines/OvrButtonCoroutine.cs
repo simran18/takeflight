@@ -16,10 +16,10 @@ public static class OVRButtonCoroutine
 #if DEBUG
     private static readonly Dictionary<OVRInput.Button, KeyCode> KEYBOARD_MAPPING = new Dictionary<OVRInput.Button, KeyCode>()
     {
-        { OVRInput.Button.One, KeyCode.Q },
-        { OVRInput.Button.Two, KeyCode.W },
-        { OVRInput.Button.Three, KeyCode.E },
-        { OVRInput.Button.Four, KeyCode.R },
+        { OVRInput.Button.One, KeyCode.Alpha1 },
+        { OVRInput.Button.Two, KeyCode.Alpha2 },
+        { OVRInput.Button.Three, KeyCode.Alpha3 },
+        { OVRInput.Button.Four, KeyCode.Alpha4 },
         { OVRInput.Button.PrimaryIndexTrigger, KeyCode.RightBracket },
         { OVRInput.Button.SecondaryIndexTrigger, KeyCode.LeftBracket },
         { OVRInput.Button.PrimaryHandTrigger, KeyCode.Quote },

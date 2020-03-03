@@ -17,19 +17,12 @@ public class PlayerThrowsAwayHelmet : LogicBranch
     public Quaternion rotationAfterGetOutOfBucket;
     public OVRScreenFade screenFade;
 
-    private AttachGameObject attacher;
-    private Transform playerTransform;
-
     public override string Name => "PlayerThrowsAwayHelmet";
 
     protected override void Awake()
     {
         if (onButtonDown == null) onButtonDown = new OVRButtonEvent();
         onButtonDown.AddListener(OnThrowButtonClick);
-        var player = GameObject.FindGameObjectWithTag("Player");
-        playerTransform = player.transform;
-        attacher = bin.GetComponentInChildren<AttachGameObject>();
-        attacher.attachmentTransform = playerTransform;
         base.Awake();
     }
 
@@ -41,10 +34,7 @@ public class PlayerThrowsAwayHelmet : LogicBranch
     private IEnumerator OnAction()
     {
         yield return new WaitForSeconds(delayBeforeGetOutOfBucket);
-        attacher.gameObject.SetActive(false);
         yield return screenFade.Fade(0f, 1f);
-        attacher.attachmentTransform.localPosition = positionAfterGetOutOfBucket;
-        attacher.attachmentTransform.localRotation = rotationAfterGetOutOfBucket;
         yield return new WaitForSeconds(2.5f);
         yield return screenFade.Fade(1f, 0f);
         dialog.gameObject.SetActive(true);

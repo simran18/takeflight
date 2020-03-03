@@ -33,7 +33,7 @@ public abstract class LogicBranch : MonoBehaviour
 
     protected void RegisterSelf()
     {
-        LogicController.Instance.AddCallable(this);
+        LogicController.Instance.AddBranch(this);
     }
 
     public void Call()
@@ -42,7 +42,6 @@ public abstract class LogicBranch : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
-
         OnCallEvent?.Invoke(Name);
         OnCall();
     }

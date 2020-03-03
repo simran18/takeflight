@@ -16,7 +16,7 @@ public class LogicController : Singleton<LogicController>
         branchDict = new Dictionary<string, LogicBranch>();
     }
 
-    public void AddCallable(LogicBranch c)
+    public void AddBranch(LogicBranch c)
     {
         if (!branchDict.ContainsKey(c.Name))
         {
@@ -24,7 +24,7 @@ public class LogicController : Singleton<LogicController>
         }
     }
 
-    public void RemoveCallable(LogicBranch c)
+    public void RemoveBranch(LogicBranch c)
     {
         branchDict.Remove(c.Name);
     }
@@ -34,7 +34,7 @@ public class LogicController : Singleton<LogicController>
         branches = branches ?? (new LogicBranch[0]);
         foreach (LogicBranch c in branches)
         {
-            AddCallable(c);
+            AddBranch(c);
         }
         nextCall = startPoint;
     }
