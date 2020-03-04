@@ -1,41 +1,76 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-
-public class LogicController : Singleton<LogicController>
+/// Modified from https://wiki.unity3d.com/index.php/Singleton
+/// Under CC BY-SA 3.0 https://creativecommons.org/licenses/by-sa/3.0/
+public class LogicController : MonoBehaviour
 {
 
-    public LogicBranch[] branches;
     public LogicBranch startPoint;
-
-    private Dictionary<string, LogicBranch> branchDict;
+    public Dictionary<string, LogicBranch> branches = new Dictionary<string, LogicBranch>();
     private LogicBranch nextCall;
 
-    public LogicController()
+    private static LogicController m_Instance;
+    private static Object m_Lock = new Object();
+
+    public static LogicController Instance
     {
-        branchDict = new Dictionary<string, LogicBranch>();
+        get {
+            if (m_Instance == null)
+            {
+                lock (m_Lock)
+                {
+                    m_Instance = FindObjectOfType<LogicController>();
+                    if (m_Instance == null)
+                    {
+                        var singletonObject = new GameObject();
+                        m_Instance = singletonObject.AddComponent<LogicController>();
+                    }
+                }
+            }
+            return m_Instance;
+        }
+    }
+
+    private void Merge(LogicController other)
+    {
+        foreach (var b in other.branches.Values)
+        {
+            AddBranch(b);
+        }
+    }
+
+    private void Awake() {
+        if (m_Instance != this)
+        {
+            Debug.Log("Merge and destroy the new LogicController.");
+            m_Instance.Merge(this);
+            Destroy(this);
+        } else
+        {
+            m_Instance = this;
+            gameObject.name = typeof(LogicController).ToString() + " (Singleton)";
+            SceneManager.sceneUnloaded += s => branches.Clear();
+            DontDestroyOnLoad(this);
+        }
     }
 
     public void AddBranch(LogicBranch c)
     {
-        if (!branchDict.ContainsKey(c.Name))
+        if (!branches.ContainsKey(c.Name))
         {
-            branchDict[c.Name] = c;
+            branches[c.Name] = c;
         }
     }
 
     public void RemoveBranch(LogicBranch c)
     {
-        branchDict.Remove(c.Name);
+        branches.Remove(c.Name);
     }
 
     void Start()
     {
-        branches = branches ?? (new LogicBranch[0]);
-        foreach (LogicBranch c in branches)
-        {
-            AddBranch(c);
-        }
         nextCall = startPoint;
     }
 
@@ -52,7 +87,6 @@ public class LogicController : Singleton<LogicController>
 
     public void MoveToBranch(string branch)
     {
-        Debug.Assert(branchDict.ContainsKey(branch));
-        this.nextCall = branchDict[branch];
+        this.nextCall = branches[branch];
     }
 }

@@ -9,7 +9,7 @@ public class FlyInDream : LogicBranch
 {
     public override string Name => "FlyInDream";
 
-    public float minimumWaitTimeBeforeTextUpdate = 3;
+    public float minimumWaitTimeBeforeTextUpdate = 1.5f;
 
     // References to the UI interface that should be modified
     [Header("UI Elements to update")]
@@ -19,12 +19,12 @@ public class FlyInDream : LogicBranch
 
 
     [Header("UIContent")]
-    public bool progressToNext;
     [SerializeField] private OVRInput.Button buttonToProgress = OVRInput.Button.Any;
     [SerializeField] private int currentContentIndex = 0;
     [SerializeField] private UIContent[] tutorialContent = new UIContent[0];
 
     [Header("Transitioning")]
+    public GameObject launchPad;
     public float timeLimit = 60;
     public int targetNumberOfRings = 5;
     public string nextLogicBranchName;
@@ -33,7 +33,15 @@ public class FlyInDream : LogicBranch
     [SerializeField] private bool showedAllContent => currentContentIndex >= tutorialContent.Length - 1;
     [SerializeField] private int ringCount = 0;
 
-    # region private classes
+#if DEBUG
+    [ContextMenu("Move to next branch")]
+    private void DebugLogicBranchTransition()
+    {
+        ringCount = targetNumberOfRings + 1;
+    }
+#endif
+
+    #region private classes
     // UI Content groups together all of the information that should be displayed at once
     [System.Serializable]
     private class UIContent
@@ -47,11 +55,7 @@ public class FlyInDream : LogicBranch
     protected override void OnCall() {
         StartCoroutine(ManageFlyingTutorialUI());
         StartCoroutine(RunTimeLimitTimer(timeLimit));
-    }
-
-    // Start is called before the first frame update
-    private void Update() {
-        progressToNext = OVRInput.GetDown(buttonToProgress) || Input.GetKeyDown("space");
+        StartCoroutine(CountNumberOfRings());
     }
 
     IEnumerator ManageFlyingTutorialUI() {
@@ -64,12 +68,12 @@ public class FlyInDream : LogicBranch
 
             if (!currentContent.autoProgress && !showedAllContent) {
                 // Wait until progress to next is true, then reset it
-                yield return new WaitUntil(() => progressToNext); 
-                progressToNext = false;
+                yield return new WaitUntil(() => OVRInput.GetDown(buttonToProgress) || Input.GetKeyDown("space"));
             }
 
             continuePrompt.SetActive(false);
         }
+        launchPad?.SetActive(true);
     }
 
     IEnumerator CountNumberOfRings() {
@@ -91,11 +95,6 @@ public class FlyInDream : LogicBranch
 
         MoveToBranch(nextLogicBranchName);
         StopAllCoroutines();
-    }
-
-    // A public function that can be accessed in a UnityEvent to trigger progression
-    public void TriggerProgressToNextTutorialSlide() {
-        progressToNext = true;
     }
 
     private void UpdateTutorialWithUIContent(UIContent content) {

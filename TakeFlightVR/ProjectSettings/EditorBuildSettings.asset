@@ -6,12 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/_Imported/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
-  - enabled: 1
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/Environments/Outside_env.unity
     guid: 2b29da416a38e7f47b4345398b44d9c4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Environments/Treehouse_env.unity
     guid: a6b4345850949064e831bffb4dfa386e
+  - enabled: 1
+    path: Assets/Scenes/Unified.unity
+    guid: 62bd7e949431af04ca121c0ea1eaf64e
+  - enabled: 1
+    path: Assets/Scenes/FlyingTutorial.unity
+    guid: ad1ed2437fa375e46a7e7c797cb69adc
+  - enabled: 1
+    path: Assets/Scenes/Owen.unity
+    guid: 25a6bb3bda595034199917d45997c43a
   m_configObjects: {}

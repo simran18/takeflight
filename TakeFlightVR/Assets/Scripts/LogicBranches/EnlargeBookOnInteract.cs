@@ -70,6 +70,6 @@ public class EnlargeBookOnInteract : LogicBranch
     public void OnYesButtonTriggered(OVRInput.Button button)
     {
         bookVoice.Stop();
-        MoveToBranch("MomComesInside");
+        MoveToBranch("LoadNextScene -> FlyingTutorial");
     }
 }
