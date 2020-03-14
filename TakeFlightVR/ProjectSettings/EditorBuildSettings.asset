@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/Environments/Outside_env.unity
+    path: Assets/Scenes/Outside_env.unity
     guid: 2b29da416a38e7f47b4345398b44d9c4
   - enabled: 0
     path: Assets/Scenes/Environments/Treehouse_env.unity
